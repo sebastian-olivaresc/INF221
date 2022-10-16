@@ -37,6 +37,7 @@ int backtracking_suma(int t, int n, int numbers_i, int numbers[], int answer[], 
     else
       return 1;
   }
+  return 1;
 }
 
 // Checkea si la respuesta ya se dio
@@ -132,11 +133,19 @@ int main (int argc, char *argv[])
                 total_answers[answers_counter++] = answer;
                 printf("\n");
               }
+              else
+              {
+                answer[0] = -2;
+                total_answers[answers_counter++] = answer;
+              }
             }
           }
-          if (total_answers[i] == 0)
+          if (total_answers[i][0] == -2)
             printf("NADA\n");
           free(numbers);
+          for (int l = 0; l < n; l++)
+            free(total_answers[l]);
+          free(total_answers);
           counter = 0;
       }
     }

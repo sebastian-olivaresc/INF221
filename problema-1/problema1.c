@@ -21,7 +21,6 @@ int b_force_monedas(int dinero, int D[], int n_denom)
   int n_denom_check = n_denom;
   int minima = 0;
   int j = 0;
-  //int buffer[100];
   
   while (n_denom_check >= 0)
   {
@@ -95,7 +94,7 @@ int main (int argc, char *argv[])
         buffer[i++] = c;
   }
   
-  free(denominaciones);
   printf("%d\n", b_force_monedas(dinero, denominaciones, n_denom));
+  free(denominaciones);
   return 0;
 }
