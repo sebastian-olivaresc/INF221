@@ -11,7 +11,7 @@
 
 // Dado un n, el dinero total, y las denominaciones D[], retorna
 // la minima cantidad de monedas que dan n.
-int b_force_monedas(int dinero, int D[], int n_denom)
+int bruteforce_monedas(int dinero, int D[], int n_denom)
 {
   // Se disminuye para recorrer el array
   n_denom -= 1;
@@ -93,8 +93,12 @@ int main (int argc, char *argv[])
       else
         buffer[i++] = c;
   }
-  
-  printf("%d\n", b_force_monedas(dinero, denominaciones, n_denom));
+  //Se agrega el ultimo dijito si no termina en \n
+  if (buffer[0] != 0)
+  {
+    denominaciones[counter - 2] = atoi(buffer);
+  }
+  printf("%d\n", bruteforce_monedas(dinero, denominaciones, n_denom));
   free(denominaciones);
   return 0;
 }
