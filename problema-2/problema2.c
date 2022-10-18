@@ -16,28 +16,31 @@
  * answer[]: array de numeros que forman la suma
  * answer_i: index de array answer
  */
+
 int backtracking_suma(int t, int n, int numbers_i, int numbers[], int answer[], int answer_i)
 {
   // Se puede hacer la suma
+  int result = 1;
   if (t == 0)
   {
     answer[answer_i] = -1;
-    return 0;
+    return t;
   }
-  else if (t - numbers[numbers_i] >= 0)
+  if (t - numbers[numbers_i] >= 0)
   {
     answer[answer_i] = numbers[numbers_i];
-    backtracking_suma(t-numbers[numbers_i], n, numbers_i+1, numbers, answer, answer_i+1);
+    result = backtracking_suma(t-numbers[numbers_i], n, numbers_i+1, numbers, answer, answer_i+1);
   }
   else
   {
     // Se salta el caso en que la suma se pase
     if (numbers_i < n)
-      backtracking_suma(t, n, numbers_i+1, numbers, answer, answer_i);
+      result = backtracking_suma(t, n, numbers_i+1, numbers, answer, answer_i);
     else
-      return 1;
+      answer[0] = -1;
   }
-  return 1;
+ 
+  return result; 
 }
 
 // Checkea si la respuesta ya se dio
@@ -45,19 +48,24 @@ int is_repeated(int answer[], int *total_answers[], int n)
 {
   int result = 0;
   int j;
-  for (int i = 0; i < n; i++)
+  if (total_answers[0] == 0)
+   result = 0; 
+  else
   {
-    j = 0;
-    while(total_answers[i][j] != -1)
+    for (int i = 0; i < n; i++)
     {
-      if (answer[j] == total_answers[i][j])
-        result = 1;
-      else
+      j = 0;
+      while(total_answers[i][j] != -1)
       {
-        result = 0;
-        break;
+        if (answer[j] == total_answers[i][j])
+          result = 1;
+        else
+        {
+          result = 0;
+          break;
+        }
+        j++;
       }
-      j++;
     }
   }
   return result;
@@ -101,7 +109,6 @@ int main (int argc, char *argv[])
         buffer[0] = 0;
         i = 0;
 
-
         // Se pasa el array formado inmediamente por el algoritmo
         if (c == '\n')
         {
@@ -109,6 +116,8 @@ int main (int argc, char *argv[])
             break;
           printf("Suma de %d:\n", t);
           total_answers= malloc(n*sizeof(int *));
+          memset(total_answers, 0, n*sizeof(int *));
+
           int answers_counter = 0;
 
           int result = 0;
@@ -130,25 +139,28 @@ int main (int argc, char *argv[])
                     printf("+");
                   printf("%d", answer[j]);
                 }
-                total_answers[answers_counter++] = answer;
-                printf("\n");
+
+              printf("\n");
+              total_answers[answers_counter++] = answer;
               }
-              else
-              {
-                answer[0] = -2;
-                total_answers[answers_counter++] = answer;
-              }
+
             }
           }
-          if (total_answers[i][0] == -2)
+
+          // Como el array inicia seteado en 0, si no se guardo ninguna respusta
+          // el primer valor es 0
+          if (total_answers[0] == 0)
             printf("NADA\n");
+          else 
+          {
+            for (int l = 0; l < n; l++)
+              free(total_answers[l]);
+          }
           free(numbers);
-          for (int l = 0; l < n; l++)
-            free(total_answers[l]);
           free(total_answers);
           counter = 0;
+        }
       }
-    }
       else
         buffer[i++] = c;
   }

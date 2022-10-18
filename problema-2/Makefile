@@ -1,6 +1,6 @@
 CC = gcc
 # compiling flags
-CFLAGS = -Wall -I.
+CFLAGS = -g -Wall -I.
 
 # directories
 SRCDIR = .
