@@ -1,31 +1,33 @@
-// problema.c - Implementacion solucion ciudades hermanas
-
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-int can_build(int a, int built[])
+int max(int a, int b)
 {
-  if (b(a - 1) <= a-1)
-    return 1
-  e
+  return a > b? a : b;
+}
 
-  /*
-    3 2 1
-    1 3 2
+int lcs_matrix(int **c, int a[], int b[], int i, int j, int *puentes, int *counter, int *max_puentes)
+{
 
-    3 2 1 4
-    1 3 4 2
-    */
+  if (i == 0 || j == 0)
+    return 0;
+  if (a[i] == b[j])
+  {
+    c[i][j] = lcs_matrix(c, a, b, i-1, j-1, puentes, counter, max_puentes) + 1;
+    if (c[i][j] > *max_puentes)
+      *max_puentes = c[i][j];
+  }
+  else
+    c[i][j] = max(lcs_matrix(c, a, b, i-1, j, puentes, counter, max_puentes), lcs_matrix(c, a, b, i, j-1, puentes, counter, max_puentes));
+  return c[i][j];
+
 }
 
 int main(int argc, char *argv[])
 {
 
-  if (argc = 0)
-    return 1;
-
   char c;
-  char *filename = argv[1];
 
   char buffer[1024];
   int i = 0;
@@ -33,7 +35,7 @@ int main(int argc, char *argv[])
   int n = 0;
   int *a;
   int *b; 
-  int counter = 0;
+  int counter = 1;
 
   while ((c = getc(stdin)) != EOF)
   {
@@ -43,12 +45,12 @@ int main(int argc, char *argv[])
       if (n == 0)
       {
         n = atoi(buffer);
-        a = malloc(n*sizeof(int));
-        b = malloc(n*sizeof(int));
+        a = malloc((n+1)*sizeof(int));
+        b = malloc((n+1)*sizeof(int));
       }
       else
       {
-        if (counter < n)
+        if (counter < n+1)
         {
           a[counter++] = atoi(buffer);
         }
@@ -70,13 +72,44 @@ int main(int argc, char *argv[])
   if (buffer[0] != 0)
     b[counter] = atoi(buffer);
 
-  /* Execute algorithm here
-   *
-   *
-   *
-   *
-   */
 
+  int **matrix = malloc((n+1)*sizeof(int *));
+  for (int i = 0; i < n+1; i++)
+  {
+    matrix[i] = malloc((n+1)*sizeof(int));
+  }
+
+
+  int puentes[n];
+  int max_puentes = 0;
+  int index_puentes= 0;
+
+  for (int i = 0; i < n+1; i++)
+  {
+    for (int j = 0; j < n+1; j++)
+      lcs_matrix(matrix, a, b, i, j, puentes, &index_puentes, &max_puentes);
+  }
+
+  printf("puentes:");
+  for (int j = 0; j < max_puentes; j++)
+  {
+    printf("%d,", puentes[j]);
+  }
+  printf("\n");
+
+  for (int i = 0; i < n+1; i++)
+
+  {
+    for (int j = 0; j < n+1; j++)
+    {
+      printf("%d,", matrix[i][j]);
+    }
+    printf("\n");
+  }
+
+  for (int i = 0; i <=n ; i++)
+    free(matrix[i]);
+  free(matrix);
 
   free(a);
   free(b);
