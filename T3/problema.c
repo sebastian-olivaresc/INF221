@@ -23,30 +23,43 @@ int *slice(int low, int high, int *a)
 
 int mediana(int la, int lb, int *a, int *b)
 {
+  /*
+  for (int i = 0; i < la; i++)
+  {
+    printf("%d,", a[i]);
+  }
+  printf("\t");
+  for (int i = 0; i < lb; i++)
+  {
+    printf("%d,", b[i]);
+  }
+  printf("\n");
+  */
+
   int out = 0;
   if (la == 1)
     return a[0];
   else if (lb == 1)
     return b[0];
-  int med1 = (int)floor((la+1)/2);
-  int med2 = (int)floor((lb+1)/2);
+  int med1 = (int)floor((la+1)/2) - 1;
+  int med2 = (int)floor((lb+1)/2) - 1;
   int m1 = a[med1];
   int m2 = b[med2];
   int *a_slice;
   int *b_slice;
 
-  if (m1 == m2 )
+  if (m1 == m2)
     return m1;
   else
   {
     if (m1 < m2)
     {
       // La media esta en la mitad de arriba
-      a_slice = slice(med1, la, a);
-      la = la - med1;
+      a_slice = slice(med1+1, la, a);
+      la = la - med1 -1;
 
       // La media esta en la mitad de abajo
-      b_slice = slice(0, med2, a);
+      b_slice = slice(0, med2, b);
       lb = med2;
     }
     else if (m1 > m2)
@@ -56,10 +69,11 @@ int mediana(int la, int lb, int *a, int *b)
       la = med1;
 
       // La media esta en la mitad de arriba 
-      b_slice = slice(med2, lb, a);
-      lb = lb - med2;
+      b_slice = slice(med2+1, lb, b);
+      lb = lb - med2 - 1;
     }
     out = mediana(la, lb, a_slice, b_slice);
+
     free(a_slice);
     free(b_slice);
   }
