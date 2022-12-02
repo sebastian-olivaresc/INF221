@@ -21,62 +21,79 @@ int *slice(int low, int high, int *a)
   return new;
 }
 
-int mediana(int la, int lb, int *a, int *b)
+int mediana(int l, int *a, int *b)
 {
   /*
-  for (int i = 0; i < la; i++)
+  for (int i = 0; i < l; i++)
   {
     printf("%d,", a[i]);
   }
   printf("\t");
-  for (int i = 0; i < lb; i++)
+  for (int i = 0; i < l; i++)
   {
     printf("%d,", b[i]);
   }
   printf("\n");
   */
-
   int out = 0;
-  if (la == 1)
-    return a[0];
-  else if (lb == 1)
-    return b[0];
-  int med1 = (int)floor((la+1)/2) - 1;
-  int med2 = (int)floor((lb+1)/2) - 1;
-  int m1 = a[med1];
-  int m2 = b[med2];
-  int *a_slice;
-  int *b_slice;
+
+  if (l == 2)
+  {
+    float max = (a[0] > b[0])? a[0] : b[0];
+    float min = (a[1] < b[1])? a[1] : b[1];
+
+    return floor((max+min)/2);
+  }
+  int med = (int)floor((l+1)/2);
+
+  float m1;
+  float m2;
+
+  if (l % 2 == 0)
+  {
+    m1 = ((float)a[med-1] + (float)a[med]) / 2;
+    m2 = ((float)b[med-1] + (float)b[med]) / 2;
+  }
+  else
+  {
+    m1 = a[med-1];
+    m2 = b[med-1];
+  }
 
   if (m1 == m2)
     return m1;
   else
   {
+    // a[m1<mediana] b[mediana>m2]
     if (m1 < m2)
     {
-      // La media esta en la mitad de arriba
-      a_slice = slice(med1+1, la, a);
-      la = la - med1 -1;
-
-      // La media esta en la mitad de abajo
-      b_slice = slice(0, med2, b);
-      lb = med2;
+      if (l % 2 == 0)
+      {
+        l = med;
+        out = mediana(l, a+med, b);
+      }
+      else
+      {
+        l = med;
+        out = mediana(l, a+med-1, b);
+      }
     }
-    else if (m1 > m2)
+    // a[mediana>m1] b[m2<mediana]
+    else 
     {
-      // La media esta en la mitad de abajo 
-      a_slice = slice(0, med1, a);
-      la = med1;
-
-      // La media esta en la mitad de arriba 
-      b_slice = slice(med2+1, lb, b);
-      lb = lb - med2 - 1;
+      if (l % 2 == 0)
+      {
+        l = med;
+        out =mediana(l, a, b+med);
+      }
+      else
+      {
+        l = med;
+        out = mediana(l, a, b+med-1);
+      }
     }
-    out = mediana(la, lb, a_slice, b_slice);
-
-    free(a_slice);
-    free(b_slice);
   }
+  
   return out;
 }
 
@@ -163,7 +180,11 @@ int main(int argc, char *argv[])
     int h = all_array[i].length;
     int *array_a = all_array[i].a;
     int *array_b = all_array[i].b;
-    printf("%d\n", mediana(h, h, array_a, array_b));
+    printf("%d\n", mediana(h, array_a, array_b));
+    free(array_a);
+    free(array_b);
   }
+  free(all_array);
+
   return 0;
 }
