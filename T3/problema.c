@@ -1,9 +1,10 @@
-// problema.c - Implementacion solucion ciudades hermanas
+// problema.c - Implementacion solucion medianas de arrays ordenados
 
 #include <stdio.h>
-#include <stdlib.h>
 #include <math.h>
+#include <stdlib.h>
 
+// Estruc que contiene los arrays
 typedef struct 
 {
   int length;
@@ -11,60 +12,24 @@ typedef struct
   int *b;
 } Element;
 
-int *slice(int low, int high, int *a)
-{
-  int *new = malloc((high-low)*sizeof(int));
-  for (int i = low; i < high; i++)
-  {
-    new[i-low] = a[i];
-  }
-  return new;
-}
-
 int mediana(int l, int *a, int *b)
 {
-  /*
-  for (int i = 0; i < l; i++)
-  {
-    printf("%d,", a[i]);
-  }
-  printf("\t");
-  for (int i = 0; i < l; i++)
-  {
-    printf("%d,", b[i]);
-  }
-  printf("\n");
-  */
   int out = 0;
 
-  if (l == 2)
-  {
-    float max = (a[0] > b[0])? a[0] : b[0];
-    float min = (a[1] < b[1])? a[1] : b[1];
-
-    return floor((max+min)/2);
-  }
+  // La mediana para arrays de largo 2 seria el promedio de los datos centrales
+  // juntando y ordenandolos corresponderian al mayor de la parte izquierda y el
+  // menor de la parte derecha
   int med = (int)floor((l+1)/2);
 
-  float m1;
-  float m2;
+  int m1 = a[med-1];
+  int m2 = b[med-1];
 
-  if (l % 2 == 0)
-  {
-    m1 = ((float)a[med-1] + (float)a[med]) / 2;
-    m2 = ((float)b[med-1] + (float)b[med]) / 2;
-  }
-  else
-  {
-    m1 = a[med-1];
-    m2 = b[med-1];
-  }
-
+  // Si las medias son iguales ese es el resultado
   if (m1 == m2)
     return m1;
   else
   {
-    // a[m1<mediana] b[mediana>m2]
+    // m1<mediana..mediana>m2
     if (m1 < m2)
     {
       if (l % 2 == 0)
@@ -78,7 +43,7 @@ int mediana(int l, int *a, int *b)
         out = mediana(l, a+med-1, b);
       }
     }
-    // a[mediana>m1] b[m2<mediana]
+    // mediana>m1...m2<mediana
     else 
     {
       if (l % 2 == 0)
@@ -116,6 +81,7 @@ int main(int argc, char *argv[])
   Element *all_array;
   int counter_all_array = 0;
 
+  // Este while guarda los datos en all_array
   while ((c = getc(stdin)) != EOF)
   {
     if (c == '\n')
@@ -173,7 +139,6 @@ int main(int argc, char *argv[])
     b[counter] = atoi(buffer);
 
   // Estan listos los arrays en el array all_array
-  //
   printf("%d\n", n);
   for (int i = 0; i < n; i++)
   {
